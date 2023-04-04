@@ -1,57 +1,100 @@
-package com.testingdocs.calculator.tests;
-
-//Arrange-Act-Assert pattern
-import com.testingdocs.calculator.Calculator;
-import org.junit.Test; 
-import org.junit.Assert; 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
-public class CalculatorTest {
-private Calculator objCalcUnderTest;
+import static org.junit.Assert.*;
 
-@Before
-public void setUp() {
-//Arrange
-objCalcUnderTest = new Calculator();
-}
+public class PalindromeTest {
 
-@Test
-public void testAdd() { 
-int a = 15; int b = 20; 
-int expectedResult = 35;
-//Act 
-long result = objCalcUnderTest.add(a, b);
-//Assert
-Assert.assertEquals(expectedResult, result);
-}
+    private Palindrome palindrome;
+    private String input;
 
-@Test
-public void testSubtract() {
-int a = 25; int b = 20; 
-int expectedResult = 5; 
-long result = objCalcUnderTest.subtract(a, b);
-Assert.assertEquals(expectedResult, result);
-}
+    @Before
+    public void setUp() throws Exception {
 
-@Test
-public void testMultiply() {
-int a = 10; int b = 25;
-long expectedResult = 250;
-long result = objCalcUnderTest.multiply(a, b);
-Assert.assertEquals(expectedResult, result);
-}
+        input = null;
+        palindrome = new Palindrome();
 
-@Test
-public void testDivide() {
-int a = 56; int b = 10; 
-double expectedResult = 5.6; 
-double result = objCalcUnderTest.divide(a, b);
-Assert.assertEquals(expectedResult, result,0.00005); 
-}
+    }
 
-@Test(expected = IllegalArgumentException.class)
-public void testDivideByZero() { 
-int a = 15; int b = 0;
-objCalcUnderTest.divide(a, b);
-} 
+    @After
+    public void tearDown() throws Exception {
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void nullStringTest() throws Exception {
+
+        palindrome.isPalindrome(null);
+
+    }
+
+    @Test
+    public void emptyStringTest() throws Exception {
+
+        input = "";
+
+        assertTrue(palindrome.isPalindrome(input));
+
+    }
+
+    @Test
+    public void multipleWhiteSpaceTest() throws Exception {
+
+        input = "A   Santa         at Nasa";
+
+        assertTrue(palindrome.isPalindrome(input));
+
+    }
+
+    @Test
+    public void singleCharTest() throws Exception {
+
+        input = "H";
+
+        assertTrue(palindrome.isPalindrome(input));
+
+    }
+
+    @Test
+    public void punctuationTest() throws Exception {
+
+        input = "Eva, can I see bees in a cave?";
+
+        assertFalse(palindrome.isPalindrome(input));
+
+    }
+
+    @Test
+    public void unicodeTest() throws Exception {
+
+        input = "\u20A9 My gym \u20A9";
+
+        assertFalse(palindrome.isPalindrome(input));
+
+    }
+
+    @Test
+    public void alphaNumericPalindromeTest() throws Exception {
+
+        input = "Air 2 an a2ria";
+
+        assertTrue(palindrome.isPalindrome(input));
+    }
+
+    @Test
+    public void validPalindromeTest() throws Exception {
+
+        input = "No lemon no melon";
+
+        assertTrue(palindrome.isPalindrome(input));
+    }
+
+    @Test
+    public void invalidPalindromeTest() throws Exception {
+
+        input = "I am a tester";
+
+        assertFalse(palindrome.isPalindrome(input));
+    }
 }
