@@ -1,46 +1,11 @@
-package com.testingdocs.calculator;
-/**
-* Calculator class:
-* Basic Mathematical functions like
-* Add,Subtract,Multiply,Divide.
-*
-*/
+package com.developersguide.junit;
+
 public class Calculator {
-//no-arg constructor
-public Calculator() {
-}
-/**
-* Sum method.
-*/
-public int add(int a, int b) {
-return a + b;
-}
-/**
-* Subtract method.
-*/
-public int subtract(int a, int b) {
-return a - b;
-}
+	public int evaluate(String expression) {
+		int sum = 0;
+		for (String summand : expression.split("\\+"))
+			sum += Integer.valueOf(summand);
+		return sum;
+	}
 
-/**
-* Multiply method.
-*/
-public long multiply(int a, int b) {
-return a * b;
-}
-
-/**
-* Divide method.
-* Note that this method throws an exception when
-* b is zero.
-*/
-public double divide(int a, int b) {
-double result;
-if (b == 0) {
-throw new IllegalArgumentException("Divisor cannot divide by zero");
-} else {
-result = Double.valueOf(a)/Double.valueOf(b);
-}
-return result;
-}
 }
