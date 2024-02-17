@@ -1,31 +1,53 @@
+@Library('shared-library-jenkins') _
+
 pipeline {
-	agent any
-	
-	stages{
-		stage('Checkout Code'){
-			steps{
-				checkout scm
-				}
-			}
-	stage('Build'){
-		steps{
-			bat "mvn clean install -Dmaven.test.skip=true"
-		}
-	}
-	
-	stage('Archive Artifact'){
-		steps{
-		archiveArtifacts artifacts:'target/*.war'
-		}
-	}
-	stage('deployment'){
-		steps{
-		deploy adapters: [tomcat9(url: 'http://localhost:8090/', 
-                              credentialsId: 'tomcatcred')], 
-                     war: 'target/*.war',
-                     contextPath: 'pipeline-demo'
-		}
-		
-	}
-  }
-}
+    agent any
+    environment {
+        registry = "785236889276.dkr.ecr.ap-south-1.amazonaws.com/ecr3-ecr"
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                script {
+                    gitCheckout(
+                        branch: "master",
+                        url: "https://github.com/Anjanmurthy607/palindrome.git"
+                    )
+                }
+            }
+        }
+        
+        stage('Unit Test Maven') {
+            steps {
+                script {
+                    mvnTest()
+                }
+            }
+        }
+        stage('Integration Test maven') {
+            
+            steps {
+                script {
+                    mvnIntegrationTest()
+                }
+            }
+        }
+        stage('Static code analysis: Sonarqube'){
+            steps{
+               script{
+                   
+                   def SonarQubecredentialsId = 'sonar-token'
+                   statiCodeAnalysis(SonarQubecredentialsId)
+               }
+            }
+        }
+        stage('Quality Gate Status Check : Sonarqube'){
+            steps{
+               script{
+                   
+                   def SonarQubecredentialsId = 'sonar-token'
+                   QualityGateStatus(SonarQubecredentialsId)
+               }
+            }
+        }
